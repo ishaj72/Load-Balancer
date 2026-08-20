@@ -1,81 +1,64 @@
-# Custom HTTP Load Balancer & Service Registry
+# Simple Load Balancer & Service Registry
 
-A lightweight, modular Layer 7 (HTTP) Load Balancer and Service Registry built with Spring Boot. It dynamically discovers backend instances upon startup and provides an extensible routing engine designed to support multiple pluggable load balancing algorithms.
+A simple HTTP load balancer built with Spring Boot. 
 
----
-
-## Overview & Architecture
-
-The system functions in two primary stages:
-
-1. **Service Registration:** Backend instances automatically announce their availability upon initialization by sending their address (host/IP and port) to the registry endpoint.
-2. **Dynamic Routing:** When incoming client traffic hits the load balancer, the core routing engine queries the active server registry, applies the selected load balancing strategy, and proxies the request to the chosen backend server.
+It works with one main backend codebase running as multiple instances on your local machine (`localhost`) using different ports. Each instance automatically registers itself when it starts, and the load balancer distributes incoming requests among them using different balancing strategies.
 
 ---
 
-## Key Features
+## How It Works
 
-- **Dynamic Auto-Discovery:** Backend nodes register dynamically at startup without needing hardcoded routing tables or restarts.
-- **Pluggable Strategy Pattern:** Modular architecture allowing seamless addition and configuration of custom routing algorithms.
-- **Transparent Reverse Proxying:** Forwards standard HTTP methods, headers, query parameters, and payload data.
-- **Dynamic Node Management:** Maintains an in-memory pool of available healthy instances.
+1. **You start the Load Balancer** on a main port (like `8080`).
+2. **You start multiple backend instances** from your backend app on different ports (like `8081`, `8082`, `8083` on `localhost`).
+3. **Auto-Registration:** As soon as each backend instance starts up, it sends its port number to the load balancer.
+4. **Request Routing:** When a user sends a request to the load balancer, it picks one of the running instances based on the selected strategy and forwards the request there.
 
 ---
 
-## Supported & Planned Strategies
+## What This Project Does
 
-| Strategy | Description |
+- **Auto-Join:** Backend servers tell the load balancer and automatically on startup.
+- **Local Multi-Instance Testing:** Run 2, 3, or more copies of your backend on `localhost` with different ports.
+- **Different Routing Strategies:** Easily test and switch between multiple ways of sharing traffic.
+- **Traffic Forwarding:** Passes incoming requests directly to the selected server and returns the answer.
+
+---
+
+## Load Balancing Strategies
+
+| Strategy | How it works (Simple words) |
 | :--- | :--- |
-| **Round Robin** | Distributes requests sequentially across the list of registered servers. |
-| **Random Selection** | Routes each request to a randomly chosen healthy instance. |
-| **Least Connections** | Directs traffic to the server with the fewest active concurrent requests. |
-| **Weighted Round Robin** | Allocates proportionally more requests to nodes with higher configured capacity. |
-| **IP Hash / Sticky Sessions** | Hashes the client's IP address to consistently map requests from the same client to the same backend node. |
+| **Round Robin** | Takes turns. Sends request 1 to Server A, request 2 to Server B, request 3 to Server C, then repeats. |
+<Other stratagies will be added later
 
 ---
 
-## System Workflows
+## Endpoints
 
-### 1. Registration Flow
-- Backend service boots up and triggers a post-startup event.
-- It detects its assigned port and host address.
-- It sends a registration payload to the load balancer's `/registry/register` endpoint.
-- The load balancer verifies the payload and updates its internal registry pool.
-
-### 2. Request Routing Flow
-- Client sends an HTTP request to the load balancer.
-- The load balancer inspects the active registry.
-- The configured routing strategy selects the best target instance.
-- The load balancer forwards the request and relays the response back to the client.
-
----
-
-## API Specifications
-
-### Service Registry
+### 1. Register a Server
 - **`POST /registry/register`**
-  - **Purpose:** Registers a newly started service node into the routing pool.
-  - **Payload Format:** JSON containing `host` (String) and `port` (Integer).
-  - **Expected Response:** `200 OK` or `201 Created`.
+- Sent by each backend instance on startup.
+- Tells the load balancer its `host` (`localhost`) and its `port` (e.g., `8081`).
 
-- **`POST /registry/deregister`** *(Planned)*
-  - **Purpose:** Removes a terminating node from the routing pool before shutdown.
-
-### Proxy Route
+### 2. Main Traffic Route
 - **`ANY /**`**
-  - **Purpose:** Wildcard route intercepting all non-registry requests and proxying them to backend targets.
+- Any other request sent to the load balancer gets forwarded to one of the registered backend instances.
 
 ---
 
-## Getting Started
+## How to Run It
 
-### Prerequisites
-- Java JDK (17 or higher)
-- Maven or Gradle wrapper
-- Multiple backend service instances or port configurations
+1. **Start the Load Balancer:**
+   - Run the load balancer app (runs on port `8080`).
 
-### Quickstart
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/ishaj72/Load-Balancer.git](https://github.com/ishaj72/Load-Balancer.git)
-   cd Load-Balancer
+2. **Start Backend Instance 1:**
+   - Run your backend with `server.port=8081`.
+
+3. **Start Backend Instance 2:**
+   - Run another copy of your backend with `server.port=8082`.
+
+4. **Test:**
+   - Send requests to `http://localhost:8080`.
+   - Watch the load balancer share the requests between port `8081` and `8082`.
+
+---
