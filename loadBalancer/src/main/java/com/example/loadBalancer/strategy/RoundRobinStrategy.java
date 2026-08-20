@@ -13,7 +13,7 @@ public class RoundRobinStrategy implements LoadBalancingStrategy{
         This class implements Round Robin strategy
         AtomicInteger helps handeling thread safe counter
         index -> this is main calculation here to find the server that comes first
-        counter = 0 -> index = 0%3 -> server 0 gets chosen and counter gets increased to 1 and son on..
+        counter = 0 -> index = 0%3 -> server 0 gets chosen and counter gets increased to 1 and so on
      */
     private final AtomicInteger counter = new AtomicInteger(0);
 
