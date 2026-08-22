@@ -1,9 +1,11 @@
 package com.example.backend.registration;
 
+import com.example.backend.dto.ServerDTO;
 import jakarta.annotation.PreDestroy;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,24 +15,29 @@ import java.util.Map;
 @Component
 public class ServerRegistration {
 
-    private final Environment environment;
+    private Environment environment;
 
     private  final RestClient restClient = RestClient.create();
-
-    @Value("${loadbalancer.url}")
-    private String loadBalancerUrl;
 
     public ServerRegistration(Environment environment) {
         this.environment = environment;
     }
 
+    @Value("${loadbalancer.url}")
+    private String loadBalancerUrl;
+
+    @Value("${server.address}")
+    private String serverHost;
+
+
+    int port = Integer.parseInt(
+            environment.getProperty("server.port")
+    );
 
     @EventListener(ApplicationReadyEvent.class)
     public void register() {
 
-        int port = Integer.parseInt(
-                environment.getProperty("server.port")
-        );
+
         restClient.post()
                 .uri(loadBalancerUrl + "/registry/register")
                 .body(Map.of(
@@ -41,9 +48,14 @@ public class ServerRegistration {
                 .toBodilessEntity();
     }
 
+    /*
+    Since restclient.delete was not working i have use method (HttpMethod.DELETE) because delete does not support body function
+     */
     @PreDestroy
     public void deregisteration(){
-     //   restClient.delete().uri(loadBalancerUrl , "/registry/deregister").body().
+        restClient.method(HttpMethod.DELETE)
+                .uri(loadBalancerUrl , "/registry/deregister")
+                .body(new ServerDTO(serverHost,port)).retrieve().toBodilessEntity();
     }
 }
 
