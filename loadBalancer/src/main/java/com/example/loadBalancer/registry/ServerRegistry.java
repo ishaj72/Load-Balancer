@@ -28,6 +28,10 @@ public class ServerRegistry {
         return servers; // maintains the list of all servers
     }
 
+    public void deleteRegistry(Server server){
+        servers.removeIf(s->s.getHost().equals(server.getHost()) && s.getPort() == server.getPort());
+    }
+
 }
 
 

@@ -34,7 +34,9 @@ public class LoadBalancerService {
     public Server selectServer() {
         return loadBalancingStrategy.selectServer(serverRegistry.getServers());
     }
+
     public String forwardRequest() {
         return backendClient.hello();
     }
+
 }
