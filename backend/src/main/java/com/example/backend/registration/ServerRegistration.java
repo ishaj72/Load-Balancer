@@ -29,10 +29,8 @@ public class ServerRegistration {
     @Value("${server.address}")
     private String serverHost;
 
-
-    int port = Integer.parseInt(
-            environment.getProperty("server.port")
-    );
+    @Value("${server.port}")
+    private Integer port;
 
     @EventListener(ApplicationReadyEvent.class)
     public void register() {
@@ -54,7 +52,7 @@ public class ServerRegistration {
     @PreDestroy
     public void deregisteration(){
         restClient.method(HttpMethod.DELETE)
-                .uri(loadBalancerUrl , "/registry/deregister")
+                .uri(loadBalancerUrl + "/registry/deregister")
                 .body(new ServerDTO(serverHost,port)).retrieve().toBodilessEntity();
     }
 }
