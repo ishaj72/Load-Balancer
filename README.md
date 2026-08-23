@@ -12,6 +12,7 @@ It works with one main backend codebase running as multiple instances on your lo
 2. **You start multiple backend instances** from your backend app on different ports (like `8081`, `8082`, `8083` on `localhost`).
 3. **Auto-Registration:** As soon as each backend instance starts up, it sends its port number to the load balancer.
 4. **Request Routing:** When a user sends a request to the load balancer, it picks one of the running instances based on the selected strategy and forwards the request there.
+5. **Auto-Deregistering:** Removes the backend from registered servers list .
 
 ---
 
@@ -21,6 +22,7 @@ It works with one main backend codebase running as multiple instances on your lo
 - **Local Multi-Instance Testing:** Run 2, 3, or more copies of your backend on `localhost` with different ports.
 - **Different Routing Strategies:** Easily test and switch between multiple ways of sharing traffic.
 - **Traffic Forwarding:** Passes incoming requests directly to the selected server and returns the answer.
+-  **Deregistering:** When the backend stops the port deregisters itself or when the api is hit by user then.
 
 ## Reference Images 
 
@@ -38,20 +40,7 @@ The port is deregistered thhrough API but this is also done automatically when t
 | Strategy | How it works (Simple words) |
 | :--- | :--- |
 | **Round Robin** | Takes turns. Sends request 1 to Server A, request 2 to Server B, request 3 to Server C, then repeats. |
-<Other stratagies will be added later
-
----
-
-## Endpoints
-
-### 1. Register a Server
-- **`POST /registry/register`**
-- Sent by each backend instance on startup.
-- Tells the load balancer its `host` (`localhost`) and its `port` (e.g., `8081`).
-
-### 2. Main Traffic Route
-- **`ANY /**`**
-- Any other request sent to the load balancer gets forwarded to one of the registered backend instances.
+Other strategies will be added later
 
 ---
 
@@ -69,5 +58,10 @@ The port is deregistered thhrough API but this is also done automatically when t
 4. **Test:**
    - Send requests to `http://localhost:8080`.
    - Watch the load balancer share the requests between port `8081` and `8082`.
+
+5. **Deregister a server**
+   - **`http://localhost:8080/registry/deregister`**
+   - Sent to backend when you to deregister the port.
+   - Need to send server and port in body with the api.
 
 ---
