@@ -39,7 +39,7 @@ public class ServerRegistration {
         restClient.post()
                 .uri(loadBalancerUrl + "/registry/register")
                 .body(Map.of(
-                        "host", "localhost",
+                        "host", serverHost,
                         "port", port
                 ))
                 .retrieve()
