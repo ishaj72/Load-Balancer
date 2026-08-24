@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamic Load Balancer</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <header>
+        <h1>Dynamic Load Balancer</h1>
+        <p>Spring Boot + Docker + Round Robin</p>
+    </header>
+
+    <section class="summary">
+
+        <div class="card">
+            <h3>Load Balancer</h3>
+            <span id="lbStatus" class="status unknown">
+                Checking...
+            </span>
+        </div>
+
+        <div class="card">
+            <h3>Registered Servers</h3>
+            <span id="serverCount">0</span>
+        </div>
+
+        <div class="card">
+            <h3>Last Request</h3>
+            <span id="lastRequest">-</span>
+        </div>
+
+    </section>
+
+
+    <section class="servers-section">
+
+        <div class="section-header">
+            <h2>Backend Servers</h2>
+
+            <button id="refreshBtn">
+                Refresh
+            </button>
+        </div>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>Server</th>
+                <th>Port</th>
+                <th>Status</th>
+                <th>Requests</th>
+            </tr>
+            </thead>
+
+            <tbody id="serverTableBody">
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+    <section class="request-section">
+
+        <h2>Test Load Balancing</h2>
+
+        <p>
+            Send requests to the load balancer and observe
+            Round Robin distribution.
+        </p>
+
+        <button id="sendRequestBtn" class="send-btn">
+            Send Request
+        </button>
+
+        <div id="responseBox" class="response-box">
+            No request sent yet.
+        </div>
+
+    </section>
+
+
+    <section class="distribution-section">
+
+        <h2>Request Distribution</h2>
+
+        <div id="distribution">
+            No requests yet.
+        </div>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
