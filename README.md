@@ -2,8 +2,7 @@
 
 A simple HTTP load balancer built with Spring Boot. 
 
-It works with one main backend codebase running as multiple instances on your local machine (`localhost`) using different ports. Each instance automatically registers itself when it starts, and the load balancer distributes incoming requests among them using different balancing strategies.
-
+It works with one main backend codebase running as multiple instances on your local machine (`localhost`) using different ports. Each instance automatically registers itself when it starts, and the load balancer distributes incoming requests among them using different balancing strategies. The application is also containerized using Docker, allowing multiple backend instances and the load balancer to run as independent containers on a custom Docker network.
 ---
 
 ## How It Works
