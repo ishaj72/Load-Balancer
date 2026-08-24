@@ -30,7 +30,6 @@ It works with one main backend codebase running as multiple instances on your lo
 <img width="1428" height="567" alt="image" src="https://github.com/user-attachments/assets/0ef39050-e56c-4af7-aba0-dec16deaffe8" />
 
 ### Deregister the port
-The port is deregistered thhrough API but this is also done automatically when the backend stops
 <img width="1425" height="607" alt="image" src="https://github.com/user-attachments/assets/40d16f93-667b-4d56-a2df-aab4b626b28c" />
 
 ---
